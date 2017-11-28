@@ -44,7 +44,7 @@ class Machine t where
 
 instance Machine TuringMachine where
   done (TM s _ _) = s === Accepted || s === Rejected
-  tape a = abort "undefined"
+  tape (TM _ z _) = z
   step a = abort "undefined"
 
 run :: (t a) -> [t a] | Machine t
@@ -62,7 +62,7 @@ tests =
   , test_around
   , test_fromListInf
   , test_done
-  //, test_tape
+  , test_tape
   //, test_step
   //, test_run
   //, test_showStates
