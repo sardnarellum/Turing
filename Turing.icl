@@ -43,9 +43,11 @@ class Machine t where
 :: TuringMachine a = TM State (Zipper a) (Int a -> (State, a, Movement))
 
 instance Machine TuringMachine where
-  done (TM s _ _) = s === Accepted || s === Rejected
+  done (TM (InState _) _ _) = False
+  done _ = True
   tape (TM _ z _) = z
-  step a = abort "undefined"
+  step a = abort "not defined"
+  //step (TM s (Z x [y:ys]) f) = (TM (fst3(f (snd s) y)) (move thd3(f (snd s) y) (Z x [y:ys])) f)
 
 run :: (t a) -> [t a] | Machine t
 run a = abort "not defined"
