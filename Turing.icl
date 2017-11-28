@@ -4,7 +4,7 @@ import StdEnv, StdLib, StdGeneric, GenEq
 
 :: Zipper a = Z [a] [a]
 
-derive gEq Zipper
+derive gEq Zipper, State
 
 fromList :: [a] -> Zipper a
 fromList [] = Z [] []
@@ -43,7 +43,7 @@ class Machine t where
 :: TuringMachine a = TM State (Zipper a) (Int a -> (State, a, Movement))
 
 instance Machine TuringMachine where
-  done a = abort "undefined"
+  done (TM s z f) = s === Accepted || s === Rejected
   tape a = abort "undefined"
   step a = abort "undefined"
 
@@ -61,7 +61,7 @@ tests =
   , test_move
   , test_around
   , test_fromListInf
-  //, test_done
+  , test_done
   //, test_tape
   //, test_step
   //, test_run
