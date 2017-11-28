@@ -43,7 +43,7 @@ class Machine t where
 :: TuringMachine a = TM State (Zipper a) (Int a -> (State, a, Movement))
 
 instance Machine TuringMachine where
-  done (TM s z f) = s === Accepted || s === Rejected
+  done (TM s _ _) = s === Accepted || s === Rejected
   tape a = abort "undefined"
   step a = abort "undefined"
 
