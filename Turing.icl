@@ -59,7 +59,7 @@ run a
 	| otherwise = [a : run (step a)]
 
 showStates :: (t Char) -> [String] | Machine t
-showStates a = abort "not defined"
+showStates a = map (toString o (around 5) o tape) (run a)
 
 tests :: [[Bool]]
 tests =
@@ -73,7 +73,7 @@ tests =
   , test_tape
   , test_step
   , test_run
-  //, test_showStates
+  , test_showStates
   ]
 
 
