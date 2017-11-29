@@ -46,9 +46,12 @@ instance Machine TuringMachine where
   done (TM (InState _) _ _) = False
   done _ = True
   tape (TM _ z _) = z
-  step (TM (InState i) (Z x [y:ys]) f) = (TM (fst3 apply) (move (thd3 apply) (Z x [(snd3 apply):ys])) f)
+  step (TM (InState i) (Z x [y:ys]) f) = (TM newState (move newMovement (Z x [newSymbol:ys])) f)
 	where
 		apply = f i y
+		newState = fst3 apply
+		newSymbol = snd3 apply
+		newMovement = thd3 apply
 
 run :: (t a) -> [t a] | Machine t
 run a = abort "not defined"
