@@ -145,41 +145,42 @@ test_fromListInf =
   ]
 ```
 
-Turing-gép típusosztály
+## Turing-gép típusosztály
 A Turing-gépen definiált műveleteket kiemeljük egy típusosztályba, hogy ezeket egy interfészen keresztül használhassuk. Definiáljuk a Machine típusosztályt, amelynek a következő műveletei vannak a t típusparaméter és Machine t korlátozás mellett:
 
-done :: (t a) -> Bool
+`done :: (t a) -> Bool`
 Annak lekérdezése, hogy az a típusú szimbólumokkal dolgozó Turing-gép futása véget ért-e.
 
-tape :: (t a) -> Zipper a
+`tape :: (t a) -> Zipper a`
 A Turing-gép szalagjának lekérdezése.
 
-step :: (t a) -> t a
+`step :: (t a) -> t a`
 A Turing gép egy lépésének elvégzése.
 
-Turing-gép adattípus
+## Turing-gép adattípus
 Definiáljuk a State adattípust, amellyel a Turing-gép aktuális állapotát fogjuk ábrázolni! Adatkonstruktorai: InState Int, ha futás közben egy bizonyos állapotban vagyunk; Accepted, ha sikeresen lefutott a program, Rejected, ha sikertelenül futott le.
 
-FONTOS: a konstruktorok nevei pontosan ugyanezek legyenek, és ebben a sorrendben legyenek megadva.
+**FONTOS: _a konstruktorok nevei pontosan ugyanezek legyenek, és ebben a sorrendben legyenek megadva._**
 
 Definiáljuk a TuringMachine adattípust, amelynek van egy a típusparamétere! Adatkonstruktora TM, amely a következő adatokat tárolja:
 
-State -- az aktuális állapot.
-Zipper a -- a szalag.
-Int a -> (State, a, Movement) -- az állapotátmeneteket leíró függvény. Az aktuális állapot sorszámából és a szalagon kijelölt szimbólumból képez egy új állapotba, egy szalagra írandó szimbólumba és egy irányba.
-FONTOS: a konstruktor neve TM legyen (mindkettő nagybetű), és a paraméterei a fent megadott sorrendben legyenek megadva.
+- `State` -- az aktuális állapot.
+- `Zipper a` -- a szalag.
+- `Int a -> (State, a, Movement)` -- az állapotátmeneteket leíró függvény. Az aktuális állapot sorszámából és a szalagon kijelölt szimbólumból képez egy új állapotba, egy szalagra írandó szimbólumba és egy irányba.
 
-A Turing-gép működése
+**FONTOS: _a konstruktor neve `TM` legyen (mindkettő nagybetű), és a paraméterei a fent megadott sorrendben legyenek megadva._**
+
+## A Turing-gép működése
 Definiáljuk a TuringMachine típus Machine-példányát!
 
-A done és tape függvények a típusban tárolt adatok alapján adják vissza az eredményt.
+A `done` és `tape` függvények a típusban tárolt adatok alapján adják vissza az eredményt.
 
-A step függvény működése a következő:
+A `step` függvény működése a következő:
 
 A típusban tárolt függvényt meghívja az aktuális állapottal és a szalagon kijelölt szimbólummal. Ez visszaadja az új állapotot, a kiírandó szimbólumot és az irányt. Az új szalagot a következőképpen kapjuk: kiírjuk a szimbólumot a régi szalagra, majd ezután léptetjük az irány alapján. A függvényt változatlanul hagyja a típusban.
 
 Tesztesetek:
-
+```
 test_done =
   [ not (done (TM (InState 0) undef undef))
   , done (TM Accepted undef undef)
@@ -205,14 +206,16 @@ test_step =
     f 0 'a' = (InState 0, 'b', Forward)
     f 0 'b' = (InState 0, 'a', Forward)
     f 1 _   = (Accepted,  'x', Stay)
-A Turing-gép futtatása
-Definiáljuk a run függvényt, amely lefuttat egy Turing-gépet és visszaadja az összes állapotát a futás során! Ha a gép már lefutott, adjuk vissza ezt egy egyelemű listában! Ha nem, végezzünk el egy lépést, futtassuk le rekurzívan az adódó gépet, majd fűzzük a lista elejére a gépet!
+```
+
+## A Turing-gép futtatása
+Definiáljuk a `run` függvényt, amely lefuttat egy Turing-gépet és visszaadja az összes állapotát a futás során! Ha a gép már lefutott, adjuk vissza ezt egy egyelemű listában! Ha nem, végezzünk el egy lépést, futtassuk le rekurzívan az adódó gépet, majd fűzzük a lista elejére a gépet!
 
 A függvény típusa:
 
-run :: (t a) -> [t a] | Machine t
+`run :: (t a) -> [t a] | Machine t`
 Tesztesetek:
-
+```
 test_run =
   [ let m = last (run (tm ['a','b','x','x']))
     in done m
@@ -231,16 +234,18 @@ test_run =
     f 0 'x' = (InState 1, 'x', Forward)
     f 1 'x' = (Accepted,  'x', Stay)
     f _ ch  = (Rejected,  '!', Stay)
-Turing-gép állapotainak megjelenítése
-Tekinstünk azokat a Turing-gépeket, amelyek szimbólumai karakterek! Definiáljuk a showStates függvényt, amely lefuttatja a gépet, majd minden állapot szalagján veszi a fókuszált elem 5 sugarú környezetét (around), ezt a listát pedig pedig szövegesen adja vissza!
+```
+
+## Turing-gép állapotainak megjelenítése
+Tekinstünk azokat a Turing-gépeket, amelyek szimbólumai karakterek! Definiáljuk a `showStates` függvényt, amely lefuttatja a gépet, majd minden állapot szalagján veszi a fókuszált elem 5 sugarú környezetét (`around`), ezt a listát pedig pedig szövegesen adja vissza!
 
 A függvény típusa:
 
-showStates :: (t Char) -> [String] | Machine t
-Tipp: karakterek listáját String értékké tudjuk alakítani a toString függvénnyel.
+`showStates :: (t Char) -> [String] | Machine t`
+Tipp: *karakterek listáját String értékké tudjuk alakítani a `toString` függvénnyel.*
 
 Tesztesetek:
-
+```
 test_showStates =
   [ showStates (tm ['a','b','x','x'])
     == [ "     abxx  "
@@ -264,11 +269,12 @@ test_showStates =
       f 0 'x' = (InState 1, 'x', Forward)
       f 1 'x' = (Accepted,  'x', Stay)
       f _ ch  = (Rejected,  '!', Stay)
-Segítség a feltöltéshez
+```
+## Segítség a feltöltéshez
 Az alábbi állományt érdemes módosítani, így, szövegesen kell feltölteni (az alábbi természetesen hibás működésű program),
 
-FONTOS: csak olyan megoldást töltsünk fel, amely lefordul!
-
+**FONTOS: _csak olyan megoldást töltsünk fel, amely lefordul!_**
+```
 module Turing
 
 import StdEnv, StdLib, StdGeneric, GenEq
@@ -334,3 +340,4 @@ tests =
   ]
 
 Start = (all and tests, zip2 [1..] (map and tests))
+```
