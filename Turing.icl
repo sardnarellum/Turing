@@ -46,8 +46,9 @@ instance Machine TuringMachine where
   done (TM (InState _) _ _) = False
   done _ = True
   tape (TM _ z _) = z
-  step a = abort "not defined"
-  //step (TM s (Z x [y:ys]) f) = (TM (fst3(f (snd s) y)) (move thd3(f (snd s) y) (Z x [y:ys])) f)
+  step (TM (InState i) (Z x [y:ys]) f) = (TM (fst3 apply) (move (thd3 apply) (Z x [(snd3 apply):ys])) f)
+	where
+		apply = f i y
 
 run :: (t a) -> [t a] | Machine t
 run a = abort "not defined"
@@ -65,7 +66,7 @@ tests =
   , test_fromListInf
   , test_done
   , test_tape
-  //, test_step
+  , test_step
   //, test_run
   //, test_showStates
   ]
