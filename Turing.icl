@@ -14,7 +14,7 @@ read :: (Zipper a) -> a
 read (Z _ y) = hd y
 
 write :: a (Zipper a) -> Zipper a
-write a (Z x [y:ys]) = (Z x [a:ys])
+write a (Z x [y:ys]) = Z x [a:ys]
 
 :: Movement = Forward
 			| Backward
@@ -22,8 +22,8 @@ write a (Z x [y:ys]) = (Z x [a:ys])
 
 move :: Movement (Zipper a) -> Zipper a
 move Stay      a      = a
-move Forward  (Z x [y:ys]) = (Z (insertAt 0 y x) ys)
-move Backward (Z [x:xs] y) = (Z xs (insertAt 0 x y))
+move Forward  (Z x [y:ys]) = Z (insertAt 0 y x) ys
+move Backward (Z [x:xs] y) = Z xs (insertAt 0 x y)
 
 around :: Int (Zipper a) -> [a]
 around k (Z a [b:bs]) = reverse (take k a) ++ [b:(take k bs)]
@@ -46,12 +46,12 @@ instance Machine TuringMachine where
   done (TM (InState _) _ _) = False
   done _ = True
   tape (TM _ z _) = z
-  step (TM (InState i) (Z x [y:ys]) f) = (TM newState (move newMovement (Z x [newSymbol:ys])) f)
+  step (TM (InState i) z f) = TM state (move movement (write symbol z)) f
 	where
-		apply = f i y
-		newState = fst3 apply
-		newSymbol = snd3 apply
-		newMovement = thd3 apply
+		apply = f i (read z)
+		state = fst3 apply
+		symbol = snd3 apply
+		movement = thd3 apply
 
 run :: (t a) -> [t a] | Machine t
 run a = abort "not defined"
