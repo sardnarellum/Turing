@@ -54,7 +54,9 @@ instance Machine TuringMachine where
 		movement = thd3 apply
 
 run :: (t a) -> [t a] | Machine t
-run a = abort "not defined"
+run a
+	| done a    = [a]
+	| otherwise = [a : run (step a)]
 
 showStates :: (t Char) -> [String] | Machine t
 showStates a = abort "not defined"
@@ -70,7 +72,7 @@ tests =
   , test_done
   , test_tape
   , test_step
-  //, test_run
+  , test_run
   //, test_showStates
   ]
 
