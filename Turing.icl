@@ -17,11 +17,11 @@ write :: a (Zipper a) -> Zipper a
 write a (Z x [y:ys]) = Z x [a:ys]
 
 :: Movement = Forward
-			| Backward
-			| Stay
+	| Backward
+	| Stay
 
 move :: Movement (Zipper a) -> Zipper a
-move Stay      a      = a
+move Stay     a            = a
 move Forward  (Z x [y:ys]) = Z (insertAt 0 y x) ys
 move Backward (Z [x:xs] y) = Z xs (insertAt 0 x y)
 
@@ -37,8 +37,8 @@ class Machine t where
   step :: (t a) -> t a
 
 :: State = InState Int
-		 | Accepted
-		 | Rejected
+	| Accepted
+	| Rejected
 
 :: TuringMachine a = TM State (Zipper a) (Int a -> (State, a, Movement))
 
